@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Demo</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
+</head>
+<body>
+    <h1>WebSocket STOMP Client</h1>
+    <div>
+        <input type="text" id="name" placeholder="Enter your name" />
+    </div>
+    <div id="greetings"></div>
+
+    <script type="text/javascript">
+        var stompClient = null;
+        var socket = null;
+
+        function connect() {
+            socket = new SockJS('http://localhost:8080/ws',);
+            stompClient = Stomp.over(socket);
+            stompClient.connect( {
+        // This header should be sent with the handshake request
+        Authorization: 'vjeko',
+    } , function (frame) {
+                console.log('Connected: ' + frame);
+                stompClient.subscribe('/user/topic/greetings', function (greeting) {
+                    showGreeting(greeting.body);
+                });
+            });
+        }
+
+        function showGreeting(message) {
+            var greetings = document.getElementById("greetings");
+            var greetingElement = document.createElement("div");
+            greetingElement.appendChild(document.createTextNode(message));
+            greetings.appendChild(greetingElement);
+        }
+
+        connect();
+
+        socket.onclose = function() {
+    console.log("Socket closed. Not connected.");
+};
+
+
+    </script>
+</body>
+</html>
