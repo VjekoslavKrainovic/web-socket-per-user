@@ -21,5 +21,6 @@ public class MessageController {
     String message = "This is a scheduled message!";
     Greeting greeting = new Greeting("Hello, " + HtmlUtils.htmlEscape(message) + "!");
     template.convertAndSendToUser(username, "/topic/greetings", greeting);
+    System.out.println("Message sent to user: " + username);
   }
 }
